@@ -1,0 +1,22 @@
+scope({c1_IMeasurable:1, c2_footprint:1, c34_total_footprint:1, c3_LinkedList:1});
+defaultScope(1);
+intRange(-8, 7);
+
+c1_IMeasurable = Abstract("c1_IMeasurable");
+c3_LinkedList = Abstract("c3_LinkedList");
+c2_footprint = c1_IMeasurable.addChild("c2_footprint").withCard(1, 1);
+c4_Abstract1 = c3_LinkedList.addChild("c4_Abstract1").withCard(1, 1).withGroupCard(1, 1).extending(c1_IMeasurable);
+c10_Option1 = c4_Abstract1.addChild("c10_Option1").withCard(0, 1).extending(c1_IMeasurable);
+c16_Option2 = c4_Abstract1.addChild("c16_Option2").withCard(0, 1).extending(c1_IMeasurable);
+c22_Option3 = c4_Abstract1.addChild("c22_Option3").withCard(0, 1).extending(c1_IMeasurable);
+c28_Option4 = c4_Abstract1.addChild("c28_Option4").withCard(0, 1).extending(c1_IMeasurable);
+c34_total_footprint = c3_LinkedList.addChild("c34_total_footprint").withCard(1, 1);
+c52_simpleConfig = Clafer("c52_simpleConfig").withCard(1, 1).extending(c3_LinkedList);
+c2_footprint.refTo(Int);
+c34_total_footprint.refTo(Int);
+c4_Abstract1.addConstraint(equal(joinRef(join($this(), c2_footprint)), constant(0)));
+c10_Option1.addConstraint(equal(joinRef(join($this(), c2_footprint)), constant(1)));
+c16_Option2.addConstraint(equal(joinRef(join($this(), c2_footprint)), constant(2)));
+c22_Option3.addConstraint(equal(joinRef(join($this(), c2_footprint)), constant(1)));
+c28_Option4.addConstraint(equal(joinRef(join($this(), c2_footprint)), constant(1)));
+c34_total_footprint.addConstraint(equal(joinRef($this()), add(add(add(joinRef(join(join(join(joinParent($this()), c4_Abstract1), c10_Option1), c2_footprint)), joinRef(join(join(join(joinParent($this()), c4_Abstract1), c16_Option2), c2_footprint))), joinRef(join(join(join(joinParent($this()), c4_Abstract1), c22_Option3), c2_footprint))), joinRef(join(join(join(joinParent($this()), c4_Abstract1), c28_Option4), c2_footprint)))));
