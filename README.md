@@ -36,5 +36,5 @@ Installation
 }
 
 ```
-* Please make sure the last argument in the code above (`$dirname$/ChocoSingle/clafer_choco_branch/clafer.exe`) points to the Clafer executable, which may be different on Linux machines.
+* Make sure the arguments in the code above (`"args": [ ... ]`) point to existing files, including the Clafer executable, which may be different on Linux machines. `$dirname$` means the full path to the *Server/Backends* folder, `$filepath$` is the full path to the Clafer file being processed.
 * Now the backend should be accessible in *ClaferMooVisualizer*.
