@@ -1,4 +1,5 @@
 ClaferChocoSoo
+v0.3.5.03-10-2013
 ===========
 
 A backend for [ClaferMooViz](https://github.com/gsdlab/ClaferMooVizualizer) that uses [ChocoSolver](https://github.com/gsdlab/chocosolver) to solve single-objective optimization problems.
