@@ -18,6 +18,7 @@ import org.clafer.ast.AstConcreteClafer;
 import org.clafer.ast.AstModel;
 import org.clafer.collection.Pair;
 import org.clafer.instance.InstanceClafer;
+import org.clafer.instance.InstanceModel;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -142,7 +143,32 @@ public class Utils {
 	    return sb.toString();
 	}
 
-	public static AstClafer getModelChildByName(AstClafer root, String name) {
+	public static InstanceClafer getInstanceValueByName(InstanceClafer[] topClafers, String name) {
+		// TODO Auto-generated method stub
+
+		for (int i = 0; i < topClafers.length; i++)
+		{
+			if (topClafers[i].getType().getName().equals(name))
+			{
+				return topClafers[i];
+			}			
+		}
+
+		for (int i = 0; i < topClafers.length; i++)
+		{
+			if (topClafers[i].hasChildren())
+			{
+				InstanceClafer result = getInstanceValueByName(topClafers[i].getChildren(), name);
+				if (result != null)
+					return result;
+			}
+		}
+		
+		return null;
+	}	
+
+	
+	public static AstConcreteClafer getModelChildByName(AstClafer root, String name) {
 		// TODO Auto-generated method stub
 
 		List<AstConcreteClafer> children = root.getChildren();
@@ -159,7 +185,7 @@ public class Utils {
 		{
 			if (clafer.hasChildren())
 			{
-				AstClafer result = getModelChildByName(clafer, name);
+				AstConcreteClafer result = getModelChildByName(clafer, name);
 				if (result != null)
 					return result;
 			}
@@ -167,7 +193,7 @@ public class Utils {
 		
 		return null;
 	}	
-	
+
 	
     public static void printClafer(InstanceClafer clafer, Appendable out) throws IOException {
     	printClafer(clafer, "", out);

@@ -20,6 +20,7 @@ import javax.xml.xpath.XPathExpression;
 import javax.xml.xpath.XPathFactory;
 
 import org.clafer.ast.*;
+
 import static org.clafer.ast.Asts.*;
 
 import org.clafer.collection.Pair;
@@ -105,10 +106,8 @@ public class Main
 		Pair<AstModel, Scope> modelPair = Javascript.readModel(jsFile);
 
 		AstModel model = modelPair.getFst();
-		
-//        ClaferSolver solver = ClaferCompiler.compile( model, Scope.defaultScope(20)); // modelPair.getSnd());
         
-        AstClafer goalClafer = null;
+        AstConcreteClafer goalClafer = null;
         
         System.out.println(model.getAbstracts());
         
@@ -126,28 +125,45 @@ public class Main
         
         if (goal.getFst().equals("max"))
         {
+        	System.out.println("Maximize");
             solver = ClaferCompiler.compileMaximize(model, 
-            	    Scope.defaultScope(20), 
+            		Scope.defaultScope(20), 
             	    goalClafer.getRef());        	
         }
         else
         {
+        	System.out.println("Minimize");
             solver = ClaferCompiler.compileMinimize(model, 
-            	    Scope.defaultScope(20), 
+            		Scope.defaultScope(20), 
             	    goalClafer.getRef());        	
         }
         
         // The optimal instance
         Pair<Integer, InstanceModel> optimalSolution = solver.optimal();
+    	System.out.println(optimalSolution);
         InstanceModel instance = optimalSolution.getSnd();
+
+        System.out.println(solver.getObjective());
+        System.out.println(solver.getInternalSolver().getName());        
         
+        System.out.println("INSTANCE:");        
+        System.out.println(instance);
+
+        System.out.println("CLAFER:");        
+        InstanceClafer instantiatedTotalClafer = Utils.getInstanceValueByName(instance.getTopClafers(),  goalClafer.getName());
+        
+        goalClafer.addConstraint(equal(joinRef($this()), constant(instantiatedTotalClafer.getRef().getValue())));
+        ClaferSolver solverForNormalInstances = ClaferCompiler.compile( modelPair.getFst(), Scope.defaultScope(20));        
         System.out.println("=====");
-        
-        for (InstanceClafer c : instance.getTopClafers())
-        {
-        	Utils.printClafer(c, System.out);
-        }
-        
+
+        while (solverForNormalInstances.find()) 
+    	{
+        	instance = solverForNormalInstances.instance();
+            for (InstanceClafer c : instance.getTopClafers())
+            {
+            	Utils.printClafer(c, System.out);
+            }
+    	}
 	}
 
 	private static void ExecuteProcess(String[] strings) throws Exception {
