@@ -24,11 +24,13 @@ import org.clafer.ast.*;
 import static org.clafer.ast.Asts.*;
 
 import org.clafer.collection.Pair;
+import org.clafer.collection.Triple;
 import org.clafer.compiler.*;
 import org.clafer.scope.*;
 import org.clafer.instance.InstanceClafer;
 import org.clafer.instance.InstanceModel;
 import org.clafer.javascript.Javascript;
+import org.clafer.objective.Objective;
 import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
 
@@ -74,91 +76,35 @@ public class Main
 			throw new Exception("The JS file does not exist");
 		}
 		
-		// OK, we have a JS file. But we need an XML file to be able to extract goals. 
-		// Goals are not compiled into a choco solver yet.
-		
-		System.out.println("Compiling with Clafer Compiler's Choco Branch to produce XML...");
-		
-		
-		ExecuteProcess(new String[]{compilerPath, fileName, compilerArgXML});
-		String xmlFileName = fileName.substring(0, fileName.lastIndexOf('.')) + ".xml";		
-		File xmlFile = new File(xmlFileName);
-		if (!xmlFile.exists())
-		{
-			throw new Exception("The XML file does not exist");
-		}
-		
-		System.out.println("Extracting Goals...");
-		
-		// getting goals from the file
-		ArrayList<Pair<String, String>> goals = Utils.getGoals(xmlFileName);
-		
-		System.out.println("Goals:");
-		System.out.println(goals);
-
-		Pair<String, String> goal = goals.get(0); // focusing on the first goal only
-		
 		//----------------------------------------
 		// Running the model itself(instantiating) 
 		//----------------------------------------
 		System.out.println("Running Model...");
 		
-		Pair<AstModel, Scope> modelPair = Javascript.readModel(jsFile);
+		Triple<AstModel, Scope, Objective[]> modelPair = Javascript.readModel(jsFile);
 
 		AstModel model = modelPair.getFst();
         
-        AstConcreteClafer goalClafer = null;
-        
-        System.out.println(model.getAbstracts());
-        
-        for (AstAbstractClafer ac : model.getAbstracts())
-        {
-        	goalClafer = Utils.getModelChildByName(ac, goal.getSnd());
-        	
-        	if (goalClafer != null)
-        		break;
+        Objective[] goals = modelPair.getThd();
+        if (goals.length == 0) {
+            throw new Exception("No goals.");
+        } else if (goals.length > 1) {
+            throw new Exception("Multiple goals not currently supported.");
         }
+        Objective goal = goals[0];
         
-        System.out.println(goalClafer.getName());
-  
-        ClaferObjective solver;
-        
-        if (goal.getFst().equals("max"))
-        {
-        	System.out.println("Maximize");
-            solver = ClaferCompiler.compileMaximize(model, 
+        	System.out.println(goal.isMaximize() ? "Maximize" : "Minimize");
+        ClaferOptimizer solver = ClaferCompiler.compile(model, 
             		Scope.defaultScope(20), 
-            	    goalClafer.getRef());        	
-        }
-        else
-        {
-        	System.out.println("Minimize");
-            solver = ClaferCompiler.compileMinimize(model, 
-            		Scope.defaultScope(20), 
-            	    goalClafer.getRef());        	
-        }
+            	    goal);        	
         
         // The optimal instance
-        Pair<Integer, InstanceModel> optimalSolution = solver.optimal();
-    	System.out.println(optimalSolution);
-        InstanceModel instance = optimalSolution.getSnd();
-
-        System.out.println(solver.getObjective());
-        System.out.println(solver.getInternalSolver().getName());        
-        
-        System.out.println("INSTANCE:");        
-        System.out.println(instance);
-
-        System.out.println("CLAFER:");        
-        InstanceClafer instantiatedTotalClafer = Utils.getInstanceValueByName(instance.getTopClafers(),  goalClafer.getName());
-        
-        goalClafer.addConstraint(equal(joinRef($this()), constant(instantiatedTotalClafer.getRef().getValue())));
-        ClaferSolver solverForNormalInstances = ClaferCompiler.compile( modelPair.getFst(), Scope.defaultScope(20));        
-        System.out.println("=====");
-
-        while (solverForNormalInstances.find()) 
+        while (solver.find()) 
     	{
-        	instance = solverForNormalInstances.instance();
+        	Pair<Integer, InstanceModel> solution = solver.instance();
+                // Not used:
+                //   int optimalValue = solution.getFst();
+                InstanceModel instance = solution.getSnd();
             for (InstanceClafer c : instance.getTopClafers())
             {
             	Utils.printClafer(c, System.out);
