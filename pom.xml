@@ -10,7 +10,7 @@
 	    <artifactId>chocosolver</artifactId>
 	    <version>0.1-SNAPSHOT</version>
 	  </dependency>
-  </dependencies>
+    </dependencies>
   <build>
 <plugins>
 <plugin>
@@ -23,6 +23,15 @@
       </manifest>
     </archive>
   </configuration>
+</plugin>
+<plugin>
+    <groupId>org.apache.maven.plugins</groupId>
+    <artifactId>maven-compiler-plugin</artifactId>
+    <version>2.5.1</version>
+    <configuration>
+        <source>1.7</source>
+        <target>1.7</target>
+    </configuration>
 </plugin>
 </plugins>
   
