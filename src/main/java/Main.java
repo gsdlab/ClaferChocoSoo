@@ -98,6 +98,7 @@ public class Main
             		Scope.defaultScope(20), 
             	    goal);        	
         
+        System.out.println("=====");
         // The optimal instance
         while (solver.find()) 
     	{
