@@ -2,13 +2,13 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>claferchoco</groupId>
   <artifactId>claferchocosoo</artifactId>
-  <version>0.0.1-SNAPSHOT</version>
+  <version>0.3.5-SNAPSHOT</version>
   <name>ChocoSingleObjectiveOptimizer</name>
   <dependencies>
 	  <dependency>
 	    <groupId>org.clafer</groupId>
 	    <artifactId>chocosolver</artifactId>
-	    <version>0.1-SNAPSHOT</version>
+	    <version>0.3.5-SNAPSHOT</version>
 	  </dependency>
     </dependencies>
   <build>
