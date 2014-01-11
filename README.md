@@ -1,14 +1,21 @@
 ClaferChocoSoo
 ===========
-v0.3.5.03-10-2013
+
+v0.3.5.15-01-2014
 
 A backend for [ClaferMooViz](https://github.com/gsdlab/ClaferMooVizualizer) that uses [ChocoSolver](https://github.com/gsdlab/chocosolver) to solve single-objective optimization problems.
 This project is simply a proxy that invokes ClaferCompiler and ChocoSolver in a proper way and produces the output in the same format as ClaferMoo does.
 
+Contributors
+------------
+
+* [Alexandr Murashkin](http://gsd.uwaterloo.ca/amurashk), MASc. Candidate. Main developer.
+* [Jimmy Liang](http://gsd.uwaterloo.ca/jliang), MSc. Candidate. Ports to Java 1.7 and Choco3.
+
 Prerequisites
 -------------
-* [ClaferMooVisualizer](https://github.com/gsdlab/ClaferMooVisualizer).
-* [Clafer Compiler, Choco branch](https://github.com/gsdlab/clafer/tree/choco).
+* [ClaferMooVisualizer](https://github.com/gsdlab/ClaferMooVisualizer) v0.3.5.
+* [Clafer Compiler](https://github.com/gsdlab/clafer) v0.3.5.
 * [Java 6+](http://www.oracle.com/technetwork/java/javase/downloads/index.html).
 * [Maven 2+](http://maven.apache.org/) - Required for building the project.
 
