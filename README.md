@@ -12,14 +12,15 @@ Contributors
 * [Alexandr Murashkin](http://gsd.uwaterloo.ca/amurashk), MMath Candidate. Main developer.
 * [Jimmy Liang](http://gsd.uwaterloo.ca/jliang), MSc. Candidate. Ports to Java 1.7 and Choco3.
 
-Getting Clafer Tools
+Getting Binaries
 --------------------
 
 Binary distributions of the release 0.3.5 of Clafer Tools for Windows, Mac, and Linux, 
 can be downloaded from [Clafer Tools - Binary Distributions](http://http://gsd.uwaterloo.ca/clafer-tools-binary-distributions). 
-Clafer Wiki requires Haskell Platform and MinGW to run on Windows. 
 
-In case these binaries do not work on your particular machine configuration, the tools can be built from source code, as described below.
+The binary for this project is called `claferchocosoo-0.3.5-jar-with-dependencies.jar`.
+
+In case this binary does not work on your particular machine configuration, it can be built from source code, as described further.
 
 Running
 -------------
