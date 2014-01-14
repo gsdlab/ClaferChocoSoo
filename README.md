@@ -22,14 +22,13 @@ Clafer Wiki requires Haskell Platform and MinGW to run on Windows.
 In case these binaries do not work on your particular machine configuration, the tools can be built from source code, as described below.
 
 Running
-=============
-
-Prerequisites
 -------------
+
+### Prerequisites
+
 * [Java 6+](http://www.oracle.com/technetwork/java/javase/downloads/index.html).
 
-Running Standalone
--------------
+### Running Standalone
 
 1. Running optimization over the Clafer choco output file: 
 ```sh
@@ -43,8 +42,7 @@ java -jar claferchocosoo-0.3.5-jar-with-dependencies.jar --version
 ```
 Outputs the current version of the tool
 
-Running as a Backend
--------------
+### Running as a Backend
 
 * Install [ClaferMooVisualizer](https://github.com/gsdlab/ClaferMooVisualizer).
 * Copy the binary `claferchocosoo-0.3.5-jar-with-dependencies.jar` to the `Backends` folder. If you built the project from the source code, then the binary should be in the `target` subfolder.
@@ -73,15 +71,15 @@ Running as a Backend
 * Now the backend should be accessible in *ClaferMooVisualizer* and listen in the `Backends` list.
 
 Building
-========
+--------
 
-Prerequisites
--------------
+### Prerequisites
+
 * [Maven 2+](http://maven.apache.org/download.cgi). Required for building the projects and linking all dependencies
 * [ChocoSolver](https://github.com/gsdlab/chocosolver). This is a Maven dependency for the project, so it should be installed (`mvn install`) as well.
 
-Building
--------------
+### Building
+
 * Using Maven, run: `mvn install` over the project.
 * Two binaries will appear in the `target` subfolder: `claferchocosoo-0.3.5-jar-with-dependencies.jar` that contains all the required dependencies and standalone, and `claferchocosoo-0.3.5.jar`, which does not include them.
 
