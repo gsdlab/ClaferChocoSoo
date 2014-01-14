@@ -27,7 +27,7 @@ Running
 ### Prerequisites
 
 * [Java 6+](http://www.oracle.com/technetwork/java/javase/downloads/index.html).
-* [Clafer Compiler](https://github.com/gsdlab/clafer). Required for compiling Clafer files (.cfr) into the Clafer Choco Javascript format (.js), so that they can be run using the tool.
+* [Clafer Compiler](https://github.com/gsdlab/clafer). Required for compiling Clafer files (`.cfr`) into the Clafer Choco Javascript format (`.js`), so that they can be run using the tool.
  
 ### Running Standalone
 
@@ -37,7 +37,9 @@ First, use *Clafer Compiler*:
 clafer --mode=choco <file-name.cfr>
 ```
 
-This will convert the Clafer file (.cfr) into the Clafer Choco Javascript file (.js). Next, run the optimization:
+This will convert the Clafer file (`.cfr`) into the Clafer Choco Javascript file (`.js`). 
+
+Next, run the optimization:
 
 ```sh
 java -jar claferchocosoo-0.3.5-jar-with-dependencies.jar <file-name.js>
@@ -66,7 +68,7 @@ java -jar claferchocosoo-0.3.5-jar-with-dependencies.jar --version
             "id": "choco_single", 
             "label": "Choco (single objective only)",
             "tooltip": "A new Choco solver, for single objective optimization only",
-            "accepted_format": "clafer_source",               
+            "accepted_format": "choco",               
             "tool": "java",
             "tool_args": ["-jar", "$dirname$/claferchocosoo-0.3.5-jar-with-dependencies.jar", "$filepath$"],
             "tool_version_args": ["-jar", "$dirname$/claferchocosoo-0.3.5-jar-with-dependencies.jar", "--version"]             },
