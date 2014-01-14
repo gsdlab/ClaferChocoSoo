@@ -42,7 +42,7 @@ public class Main
 		
 		if (args.length < 1)
 		{
-			throw new Exception("Not Enough Arguments. Must be at least one");		
+			throw new Exception("Not enough arguments. Must be at least one");		
 		}
 		
 		if (args[0].equals("--version"))
@@ -62,37 +62,12 @@ public class Main
 			return;
 		}
 		
-		if (args.length < 2)
-		{
-			throw new Exception("Not Enough Arguments. Need File Name and Compiler Path");
-		}
-		
 		String fileName = args[0];
-		String compilerPath = args[1];
-		compilerPath = compilerPath.replaceAll("//", "/"); // remove double slashes may be caused by the last concatenation
-				
-		String compilerArgChoco = "--mode=choco";
-		String compilerArgXML = "--mode=XML";
-		
 		File inputFile = new File(fileName);
 		
 		if (!inputFile.exists())
 		{
-			throw new Exception("File Does Not Exist");
-		}
-		
-		// now we are sure that the file exists.
-		// now executing the Clafer Compiler (but, the Choco branch!)
-		
-
-		System.out.println("Compiling with Clafer Compiler's Choco Branch to produce JS...");
-		
-		ExecuteProcess(new String[]{compilerPath, fileName, compilerArgChoco});
-		String jsFileName = fileName.substring(0, fileName.lastIndexOf('.')) + ".js";		
-		File jsFile = new File(jsFileName);
-		if (!jsFile.exists())
-		{
-			throw new Exception("The JS file does not exist");
+			throw new Exception("File does not exist: " + fileName);
 		}
 		
 		//----------------------------------------
@@ -100,7 +75,7 @@ public class Main
 		//----------------------------------------
 		System.out.println("Running Model...");
 		
-		Triple<AstModel, Scope, Objective[]> modelPair = Javascript.readModel(jsFile);
+		Triple<AstModel, Scope, Objective[]> modelPair = Javascript.readModel(inputFile);
 
 		AstModel model = modelPair.getFst();
         
@@ -112,7 +87,7 @@ public class Main
         }
         Objective goal = goals[0];
         
-        	System.out.println(goal.isMaximize() ? "Maximize" : "Minimize");
+        System.out.println(goal.isMaximize() ? "Maximize" : "Minimize");
         ClaferOptimizer solver = ClaferCompiler.compile(model, 
             		Scope.defaultScope(20), 
             	    goal);        	
@@ -124,7 +99,7 @@ public class Main
         	Pair<Integer, InstanceModel> solution = solver.instance();
                 // Not used:
                 //   int optimalValue = solution.getFst();
-                InstanceModel instance = solution.getSnd();
+            InstanceModel instance = solution.getSnd();
             for (InstanceClafer c : instance.getTopClafers())
             {
             	Utils.printClafer(c, System.out);
