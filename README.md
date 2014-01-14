@@ -56,7 +56,7 @@ java -jar claferchocosoo-0.3.5-jar-with-dependencies.jar --version
 ### Running as a Backend
 
 * Install [ClaferMooVisualizer](https://github.com/gsdlab/ClaferMooVisualizer).
-* Copy the binary `claferchocosoo-0.3.5-jar-with-dependencies.jar` to the `Backends` folder. If you built the project from the source code, then the binary should be in the `target` subfolder.
+* Copy the binary `claferchocosoo-0.3.5-jar-with-dependencies.jar` to the `Backends` folder. If you built the project from the source code, the binary can be found in the `target` subfolder.
 * Put (if exists, just make sure all paths match) the following configuration in the `Server/Backends/backends.json` :
 
 ```json
