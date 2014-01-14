@@ -27,14 +27,20 @@ Running
 ### Prerequisites
 
 * [Java 6+](http://www.oracle.com/technetwork/java/javase/downloads/index.html).
-
+* [Clafer Compiler](https://github.com/gsdlab/clafer). Required for compiling Clafer files (.cfr) into the Clafer Choco Javascript format (.js), so that they can be run using the tool.
+ 
 ### Running Standalone
 
 1. Running optimization over the Clafer choco output file: 
 ```sh
+clafer --mode=choco <file-name.cfr>
+```
+This will convert the Clafer file (.cfr) into the Clafer Choco Javascript file (.js).
+
+```sh
 java -jar claferchocosoo-0.3.5-jar-with-dependencies.jar <file-name.js>
 ```
-This will produce optimal instances in a textual form.
+This will run the solver and produce optimal instances in a textual form. Only Clafer files with single objective can be processed at this time. 
 
 2. Version:
 ```sh
@@ -68,7 +74,7 @@ Outputs the current version of the tool
 ```
 `$dirname$` means the full path to the *Server/Backends* folder, `$filepath$` is the full path to the input JS file being processed.
 * If you made any changes to the `backends.json`, then restart *ClaferMooVisualizer*.
-* Now the backend should be accessible in *ClaferMooVisualizer* and listen in the `Backends` list.
+* Now the backend should be accessible in *ClaferMooVisualizer* and listed in the `Backends` dropdown list.
 
 Building
 --------
@@ -78,10 +84,10 @@ Building
 * [Maven 2+](http://maven.apache.org/download.cgi). Required for building the projects and linking all dependencies
 * [ChocoSolver](https://github.com/gsdlab/chocosolver). This is a Maven dependency for the project, so it should be installed (`mvn install`) as well.
 
-### Building
+### Procedures
 
 * Using Maven, run: `mvn install` over the project.
-* Two binaries will appear in the `target` subfolder: `claferchocosoo-0.3.5-jar-with-dependencies.jar` that contains all the required dependencies and standalone, and `claferchocosoo-0.3.5.jar`, which does not include them.
+* Two binaries will appear in the `target` subfolder: `claferchocosoo-0.3.5-jar-with-dependencies.jar` that is standalone and contains all the required dependencies, and `claferchocosoo-0.3.5.jar` that is not.
 
 ### Important: Branches must correspond
 
