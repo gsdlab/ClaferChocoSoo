@@ -4,12 +4,12 @@ ClaferChocoSoo
 v0.3.5.15-01-2014
 
 A backend for [ClaferMooViz](https://github.com/gsdlab/ClaferMooVizualizer) that uses [ChocoSolver](https://github.com/gsdlab/chocosolver) to solve single-objective optimization problems.
-This project is simply a proxy that invokes ClaferCompiler and ChocoSolver in a proper way and produces the output in the same format as ClaferMoo does.
+This project is a wrapper that invokes ChocoSolver in a proper way and produces the output in the same format as ClaferMoo does.
 
 Contributors
 ------------
 
-* [Alexandr Murashkin](http://gsd.uwaterloo.ca/amurashk), MASc. Candidate. Main developer.
+* [Alexandr Murashkin](http://gsd.uwaterloo.ca/amurashk), MMath Candidate. Main developer.
 * [Jimmy Liang](http://gsd.uwaterloo.ca/jliang), MSc. Candidate. Ports to Java 1.7 and Choco3.
 
 Getting Clafer Tools
@@ -21,15 +21,31 @@ Clafer Wiki requires Haskell Platform and MinGW to run on Windows.
 
 In case these binaries do not work on your particular machine configuration, the tools can be built from source code, as described below.
 
-Prerequisites
+Prerequisites for Running
 -------------
-* [ClaferMooVisualizer](https://github.com/gsdlab/ClaferMooVisualizer) v0.3.5.
-* [Clafer Compiler](https://github.com/gsdlab/clafer) v0.3.5.
 * [Java 6+](http://www.oracle.com/technetwork/java/javase/downloads/index.html).
-* [Maven 2+](http://maven.apache.org/) - Required for building the project.
 
-Installation
+Running Standalone
 -------------
+
+1. Running optimization over the Clafer choco output file: 
+```sh
+java -jar claferchocosoo-0.3.5-jar-with-dependencies.jar <file-name.js>
+```
+
+This will produce optimal instances in a textual form.
+
+2. Version
+```sh
+java -jar claferchocosoo-0.3.5-jar-with-dependencies.jar --version
+```
+
+Outputs the current version of the tool
+
+Running as a Backend
+-------------
+
+
 * Install *ClaferMooVisualizer* (the *MultipleBackends* branch, from the link above).
 * In the folder `Server/Backends`, create a `ChocoSingle` folder.
 * Copy `claferchocosoo-0.3.5-SNAPSHOT-jar-with-dependencies.jar` from the `target` folder to `ChocoSingle` folder.
