@@ -21,7 +21,10 @@ Clafer Wiki requires Haskell Platform and MinGW to run on Windows.
 
 In case these binaries do not work on your particular machine configuration, the tools can be built from source code, as described below.
 
-Prerequisites for Running
+Running
+=============
+
+Prerequisites
 -------------
 * [Java 6+](http://www.oracle.com/technetwork/java/javase/downloads/index.html).
 
@@ -43,12 +46,8 @@ Outputs the current version of the tool
 Running as a Backend
 -------------
 
-
-* Install *ClaferMooVisualizer* (the *MultipleBackends* branch, from the link above).
-* In the folder `Server/Backends`, create a `ChocoSingle` folder.
-* Copy `claferchocosoo-0.3.5-SNAPSHOT-jar-with-dependencies.jar` from the `target` folder to `ChocoSingle` folder.
-* Create a folder `clafer_choco_branch` in `ChocoSingle`.
-* Build *Clafer Compiler* (the *choco* branch, getting it from the link above) to the folder `clafer_choco_branch`. The folder `clafer_choco_branch` should contain the executable of Clafer.
+* Install [ClaferMooVisualizer](https://github.com/gsdlab/ClaferMooVisualizer).
+* Copy the binary `claferchocosoo-0.3.5-jar-with-dependencies.jar` to the `Backends` folder. If you built the project from the source code, then the binary should be in the `target` subfolder.
 * Put (if exists, just make sure all paths match) the following configuration in the `Server/Backends/backends.json` :
 
 ```json
@@ -59,17 +58,32 @@ Running as a Backend
         {
             "id": "choco_single", 
             "label": "Choco (single objective only)",
+            "tooltip": "A new Choco solver, for single objective optimization only",
+            "accepted_format": "clafer_source",               
             "tool": "java",
-            "args": ["-jar", "$dirname$/ChocoSingle/claferchocosoo-0.3.5-SNAPSHOT-jar-with-dependencies.jar", "$filepath$", "$dirname$/ChocoSingle/clafer_choco_branch/clafer.exe"]            
-        },
+            "tool_args": ["-jar", "$dirname$/claferchocosoo-0.3.5-jar-with-dependencies.jar", "$filepath$"],
+            "tool_version_args": ["-jar", "$dirname$/claferchocosoo-0.3.5-jar-with-dependencies.jar", "--version"]             },
         ....        
     ]   
 }
 
 ```
+`$dirname$` means the full path to the *Server/Backends* folder, `$filepath$` is the full path to the input JS file being processed.
+* If you made any changes to the `backends.json`, then restart *ClaferMooVisualizer*.
+* Now the backend should be accessible in *ClaferMooVisualizer* and listen in the `Backends` list.
 
-* Make sure the arguments in the code above (`"args": [ ... ]`) point to existing files, including the Clafer executable, which may be different on Linux machines. `$dirname$` means the full path to the *Server/Backends* folder, `$filepath$` is the full path to the Clafer file being processed.
-* Now the backend should be accessible in *ClaferMooVisualizer*.
+Building
+========
+
+Prerequisites
+-------------
+* [Maven 2+](http://maven.apache.org/download.cgi). Required for building the projects and linking all dependencies
+* [ChocoSolver](https://github.com/gsdlab/chocosolver). This is a Maven dependency for the project, so it should be installed (`mvn install`) as well.
+
+Building
+-------------
+* Using Maven, run: `mvn install` over the project.
+* Two binaries will appear in the `target` subfolder: `claferchocosoo-0.3.5-jar-with-dependencies.jar` that contains all the required dependencies and standalone, and `claferchocosoo-0.3.5.jar`, which does not include them.
 
 ### Important: Branches must correspond
 
