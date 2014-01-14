@@ -2,39 +2,50 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>claferchoco</groupId>
   <artifactId>claferchocosoo</artifactId>
-  <version>0.3.5-SNAPSHOT</version>
+  <version>0.3.5</version>
   <name>ChocoSingleObjectiveOptimizer</name>
   <dependencies>
 	  <dependency>
 	    <groupId>org.clafer</groupId>
 	    <artifactId>chocosolver</artifactId>
-	    <version>0.3.5-SNAPSHOT</version>
+	    <version>0.3.5</version>
 	  </dependency>
     </dependencies>
-  <build>
-<plugins>
-<plugin>
-  <groupId>org.apache.maven.plugins</groupId>
-  <artifactId>maven-assembly-plugin</artifactId>
-  <configuration>
-    <archive>
-      <manifest>
-        <mainClass>Main</mainClass>
-      </manifest>
-    </archive>
-  </configuration>
-</plugin>
-<plugin>
-    <groupId>org.apache.maven.plugins</groupId>
-    <artifactId>maven-compiler-plugin</artifactId>
-    <version>2.5.1</version>
-    <configuration>
-        <source>1.7</source>
-        <target>1.7</target>
-    </configuration>
-</plugin>
-</plugins>
-  
-  </build>
-	  
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <version>2.4</version>
+                <executions>
+                    <execution>
+                        <id>shell</id>
+                        <goals>
+                            <goal>attached</goal>
+                        </goals>
+                        <phase>package</phase>
+                        <configuration>
+                            <descriptorRefs>
+                                <descriptorRef>jar-with-dependencies</descriptorRef>
+                            </descriptorRefs>
+                            <archive>
+                                <manifest>
+                                    <mainClass>Main</mainClass>
+                                </manifest>
+                            </archive>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>2.5.1</version>
+                <configuration>
+                    <source>1.7</source>
+                    <target>1.7</target>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 </project>

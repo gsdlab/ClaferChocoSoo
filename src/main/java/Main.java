@@ -7,6 +7,7 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map.Entry;
+import java.util.Properties;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -39,9 +40,27 @@ public class Main
 
 	public static void main(String[] args) throws Exception {
 		
-//		String currentDir = System.getProperty("user.dir");
+		if (args.length < 1)
+		{
+			throw new Exception("Not Enough Arguments. Must be at least one");		
+		}
 		
-//		System.out.println("Current Directory: " + currentDir);
+		if (args[0].equals("--version"))
+		{
+			Properties configFile = new Properties();
+			try {
+				configFile.load(Main.class.getClassLoader().getResourceAsStream("version.properties"));
+				String name = configFile.getProperty("name");
+				String releaseDate = configFile.getProperty("releasedate");
+				String version = configFile.getProperty("version");
+				System.out.println(name + " v" + version + "." + releaseDate);
+			} catch (IOException e) {
+	 
+				e.printStackTrace();
+			}
+						
+			return;
+		}
 		
 		if (args.length < 2)
 		{
