@@ -32,14 +32,12 @@ Running Standalone
 ```sh
 java -jar claferchocosoo-0.3.5-jar-with-dependencies.jar <file-name.js>
 ```
-
 This will produce optimal instances in a textual form.
 
-2. Version
+2. Version:
 ```sh
 java -jar claferchocosoo-0.3.5-jar-with-dependencies.jar --version
 ```
-
 Outputs the current version of the tool
 
 Running as a Backend
