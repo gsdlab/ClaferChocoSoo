@@ -54,7 +54,7 @@ To get the tool version:
 java -jar claferchocosoo-0.3.5-jar-with-dependencies.jar --version
 ```
 
-### Running as a Backend
+### Running as Backend
 
 * Install [ClaferMooVisualizer](https://github.com/gsdlab/ClaferMooVisualizer).
 * Copy the binary `claferchocosoo-0.3.5-jar-with-dependencies.jar` to the `Backends` folder. If you built the project from the source code, the binary can be found in the `target` subfolder.
