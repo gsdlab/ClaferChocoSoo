@@ -31,22 +31,25 @@ Running
  
 ### Running Standalone
 
-1. Running optimization over the Clafer choco output file: 
+First, use *Clafer Compiler*:
+
 ```sh
 clafer --mode=choco <file-name.cfr>
 ```
-This will convert the Clafer file (.cfr) into the Clafer Choco Javascript file (.js).
+
+This will convert the Clafer file (.cfr) into the Clafer Choco Javascript file (.js). Next, run the optimization:
 
 ```sh
 java -jar claferchocosoo-0.3.5-jar-with-dependencies.jar <file-name.js>
 ```
+
 This will run the solver and produce optimal instances in a textual form. Only Clafer files with single objective can be processed at this time. 
 
-2. Version:
+To get the tool version:
+
 ```sh
 java -jar claferchocosoo-0.3.5-jar-with-dependencies.jar --version
 ```
-Outputs the current version of the tool
 
 ### Running as a Backend
 
