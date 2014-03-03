@@ -26,123 +26,12 @@ import org.w3c.dom.NodeList;
 
 
 public class Utils {
-	
-	
-	
-	public static ArrayList<Pair<String, String>> getGoals(String xmlFileName) throws Exception
-	{
-		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-		DocumentBuilder builder = factory.newDocumentBuilder();
-		Document doc = builder.parse(xmlFileName);
 		
-		System.out.println("XML Root element: " + doc.getDocumentElement().getNodeName());
-		
-		XPathFactory xPathfactory = XPathFactory.newInstance();
-		XPath xpath = xPathfactory.newXPath();
-		
-//		doc.getElementsByTagName("")
-		
-		XPathExpression expr = xpath.compile("/Module/Declaration[@type='cl:IGoal']/ParentExp/Exp");
-		NodeList nl = (NodeList) expr.evaluate(doc, XPathConstants.NODESET);
-		
-		ArrayList<Pair<String, String>> result = new ArrayList<Pair<String,String>>();
-
-		for (int i = 0; i < nl.getLength(); i++)
-		{
-			Node node = nl.item(i);
-			
-			String builtExp = buildExp(node);
-			
-			String parts[] = builtExp.split(" ");
-			String operation = parts[0];
-			String rest = builtExp.replaceAll("[^ ]* ", "").replace(".ref", "");
-			rest = rest.replaceAll("[^.]*\\.", "");
-			
-			Pair<String, String> current = new Pair<String, String>(operation, rest);
-			result.add(current);
-		}
-		
-		
-		return result;
-		
-	}
-	
 	private static String claferFilter (String s)
 	{
-		return s.replaceAll("c[^_]*_", "");
+		return s.replaceAll("c0_*_", "");
 	}
 	
-	private static String operationFilter(String s)
-	{
-		String result = "";
-		
-		if (s.equals("max"))
-			result = "max" + " ";
-			
-		else if (s.equals("min"))
-			result = "min" + " ";
-		else
-			result = s;
-			
-		return result;
-	}
-
-	private static String buildExp(Node exp)
-	{
-		String operation = "";
-		
-		ArrayList<String> renderedArgs = new ArrayList<String>();
-		
-		for (int i = 0; i < exp.getChildNodes().getLength(); i++)
-		{
-			Node current = exp.getChildNodes().item(i);
-			if (current.getNodeName().equals("Argument"))
-			{			
-				
-				for (int j = 0; j < current.getChildNodes().getLength(); j++) 
-				{
-					Node expNode = current.getChildNodes().item(j);
-					if (expNode.getNodeType() == Node.ELEMENT_NODE)
-					{
-						Element expElement = (Element) expNode;
-						if (expElement.getNodeName().equals("Exp")) 
-						{
-							renderedArgs.add(buildExp(expElement));
-							break;
-						}
-					}
-				}
-			}
-			else if (current.getNodeName().equals("Operation"))
-			{
-				operation = operationFilter(current.getFirstChild().getNodeValue());
-			}
-			else if (current.getNodeName().equals("Id"))
-			{
-				return current.getFirstChild().getNodeValue();
-			}
-		}
-		
-		if (renderedArgs.size() == 1)
-			return operation + renderedArgs.get(0);
-		else
-			return join(renderedArgs, operation);
-		
-	}
-	
-	
-	private static String join(Collection<?> col, String delim) {
-	    StringBuilder sb = new StringBuilder();
-	    Iterator<?> iter = col.iterator();
-	    if (iter.hasNext())
-	        sb.append(iter.next().toString());
-	    while (iter.hasNext()) {
-	        sb.append(delim);
-	        sb.append(iter.next().toString());
-	    }
-	    return sb.toString();
-	}
-
 	public static InstanceClafer getInstanceValueByName(InstanceClafer[] topClafers, String name) {
 		// TODO Auto-generated method stub
 
@@ -167,8 +56,7 @@ public class Utils {
 		return null;
 	}	
 
-	
-	public static AstConcreteClafer getModelChildByName(AstClafer root, String name) {
+	public static AstConcreteClafer getConcreteClaferChildByName(AstClafer root, String name) {
 		// TODO Auto-generated method stub
 
 		List<AstConcreteClafer> children = root.getChildren();
@@ -185,22 +73,66 @@ public class Utils {
 		{
 			if (clafer.hasChildren())
 			{
-				AstConcreteClafer result = getModelChildByName(clafer, name);
+				AstConcreteClafer result = getConcreteClaferChildByName(clafer, name);
 				if (result != null)
 					return result;
 			}
 		}
 		
 		return null;
-	}	
+	}	    
+	
+	public static AstClafer getModelChildByName(AstModel model, String name) {
+		// TODO Auto-generated method stub
+		
+		List<AstAbstractClafer> abstractChildren = model.getAbstracts();
+		
+		for (AstAbstractClafer clafer : abstractChildren)
+		{
+			if (clafer.getName().equals(name))
+			{
+				return clafer;
+			}
+		}
 
+		for (AstAbstractClafer clafer : abstractChildren)
+		{
+			AstClafer foundchild = getConcreteClaferChildByName(clafer, name);
+			if (foundchild != null)
+			{
+				return foundchild;
+			}
+		}		
+
+		
+		List<AstConcreteClafer> concreteChildren = model.getChildren();
+		
+		for (AstConcreteClafer clafer : concreteChildren)
+		{
+			if (clafer.getName().equals(name))
+			{
+				return clafer;
+			}
+		}
+
+		for (AstConcreteClafer clafer : concreteChildren)
+		{
+			AstClafer foundchild = getConcreteClaferChildByName(clafer, name);
+			if (foundchild != null)
+			{
+				return foundchild;
+			}
+		}		
+		
+		return null;
+	}	
 	
     public static void printClafer(InstanceClafer clafer, Appendable out) throws IOException {
     	printClafer(clafer, "", out);
     }
 
     private static void printClafer(InstanceClafer clafer, String indent, Appendable out) throws IOException {
-        out.append(indent).append(clafer.getType().toString());
+        out.append(indent).append(clafer.getType().toString()).append("#").append(Integer.toString(clafer.getId()));
         
         if (clafer.getType().getSuperClafer() != null)
         {

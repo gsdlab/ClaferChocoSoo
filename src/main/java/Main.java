@@ -5,7 +5,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.regex.Matcher;
@@ -87,59 +89,71 @@ public class Main
         }
         Objective goal = goals[0];
         
-        System.out.println(goal.isMaximize() ? "Maximize" : "Minimize");
-        ClaferOptimizer solver = ClaferCompiler.compile(model, 
-            		Scope.defaultScope(20), 
-            	    goal);        	
+        System.out.println(goal.isMaximize() ? "Maximize" : "Minimize");       	
         
-        System.out.println("=====");
+        Scope scope = modelPair.getSnd(); 
+
+        if (args.length >= 2 && args[1].equals("--aadl"))
+		{
+			Properties configFile = new Properties();
+			try {
+				configFile.load(Main.class.getClassLoader().getResourceAsStream("aadl.scopes"));
+				
+				for (Enumeration<Object> e = configFile.keys(); e.hasMoreElements();)
+				{
+					String key = (e.nextElement()).toString();					
+					int value = Integer.parseInt(configFile.getProperty(key));
+					System.out.println(key + " = " + value);
+					
+					if (key.equals("defaultScope"))
+					{
+						scope = scope.toBuilder().defaultScope(value).toScope();
+						System.out.println("Set default scope: " + value);
+					}
+					else if (key.equals("maxInt"))
+					{
+						int scopeHigh = value;
+						int scopeLow = -(scopeHigh + 1);
+						scope = scope.toBuilder().intLow(scopeLow).intHigh(scopeHigh).toScope();
+						System.out.println("Set maxInt: " + value);
+					}
+					else
+					{
+						AstClafer clafer = Utils.getModelChildByName(model, key);
+						if (clafer == null)
+						{
+							System.out.println("The clafer is not found: '" + key + "'");
+							continue;
+						}
+							
+						scope = scope.toBuilder().setScope(clafer, value).toScope();					
+						System.out.println("Set clafer scope: '" + key + "' = " + value);
+					}
+				}
+				
+//				String releaseDate = configFile.getProperty("releasedate");
+			} catch (IOException e) {
+	 
+				e.printStackTrace();
+			}						
+		}
+        else
+        	scope = scope.toBuilder().defaultScope(26).toScope();
+
+        ClaferOptimizer solver = ClaferCompiler.compile(model, 
+        		scope, 
+        	    goal);         
+        
+        System.out.println("=====");        
+        
         // The optimal instance
         while (solver.find()) 
     	{
-        	Pair<Integer, InstanceModel> solution = solver.instance();
-                // Not used:
-                //   int optimalValue = solution.getFst();
-            InstanceModel instance = solution.getSnd();
+            InstanceModel instance = solver.instance();
             for (InstanceClafer c : instance.getTopClafers())
             {
             	Utils.printClafer(c, System.out);
             }
     	}
 	}
-
-	private static void ExecuteProcess(String[] strings) throws Exception {
-		ProcessBuilder pb = new ProcessBuilder(strings);
-		pb.redirectErrorStream(true);
-		Process compilerChoco = pb.start();
-
-		InputStream is = compilerChoco.getInputStream();
-		InputStreamReader isr = new InputStreamReader(is);
-		BufferedReader br = new BufferedReader(isr);
-
-		String line;
-		int exit = -1;
-		
-		while ((line = br.readLine()) != null) 
-		{
-		    // Outputs your process execution
-		    System.out.println(line);
-		    try {
-		        exit = compilerChoco.exitValue();
-		        if (exit == 0)  
-		        {
-		        	// Process finished
-		        	// So, the output file is a JS file of the compiled model 
-		        }
-		        else
-		        	throw new Exception("The return code of the compiler is non-zero");
-		        
-		    } catch (IllegalThreadStateException t) {
-		        // The process has not yet finished. 
-		        // Should we stop it?
-//		        proc.destroy();
-		    }
-		}		
-		
-	}
-
 }
