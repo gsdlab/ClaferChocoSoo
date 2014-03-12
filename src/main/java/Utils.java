@@ -132,15 +132,21 @@ public class Utils {
     }
 
     private static void printClafer(InstanceClafer clafer, String indent, Appendable out) throws IOException {
-        out.append(indent).append(clafer.getType().toString()).append("#").append(Integer.toString(clafer.getId()));
+        out.append(indent).append(clafer.getType().toString()).append("$").append(Integer.toString(clafer.getId()));
         
         if (clafer.getType().getSuperClafer() != null)
         {
-        	out.append(" : ").append(clafer.getType().getSuperClafer().getName());
+        	String name = clafer.getType().getSuperClafer().getName();
+        	if (name.equals("#clafer#"))
+        		name = "clafer";
+        	
+        	out.append(" : ").append(name);
         }
         
         if(clafer.hasRef()) {
-            out.append("  =  ").append(clafer.getRef().toString());
+            out.append("  =  ").append(clafer.getRef().getType().isPrimitive()
+                    ? clafer.getRef().getValue().toString()
+                    : clafer.getRef().getType().getName() + "$" + clafer.getRef().getValue());
         }
 
         out.append(" \n");

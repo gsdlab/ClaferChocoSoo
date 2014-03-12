@@ -22,6 +22,9 @@ import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpression;
 import javax.xml.xpath.XPathFactory;
 
+import joptsimple.OptionParser;
+import joptsimple.OptionSet;
+
 import org.clafer.ast.*;
 
 import static org.clafer.ast.Asts.*;
@@ -42,12 +45,23 @@ public class Main
 
 	public static void main(String[] args) throws Exception {
 		
-		if (args.length < 1)
-		{
-			throw new Exception("Not enough arguments. Must be at least one");		
-		}
-		
-		if (args[0].equals("--version"))
+        OptionParser parser = new OptionParser() {
+            {
+                accepts( "file", "input file name in Javascript format" ).withRequiredArg().ofType( File.class )
+                    .describedAs( "Javascript file" );
+                
+                accepts( "testaadl", "test the AADL to Clafer model" );
+                accepts( "version", "display the tool version" );
+                accepts( "maxint", "specify maximum integer value" ).withRequiredArg().ofType( Integer.class );
+                accepts( "scope", "override global scope value" ).withRequiredArg().ofType( Integer.class );
+
+                accepts( "help", "show help").forHelp();                
+            }
+        };
+
+        OptionSet options = parser.parse(args);
+
+		if (options.has("version"))
 		{
 			Properties configFile = new Properties();
 			try {
@@ -63,13 +77,18 @@ public class Main
 						
 			return;
 		}
+
 		
-		String fileName = args[0];
-		File inputFile = new File(fileName);
+		if (!options.has( "file" ) ){
+			throw new Exception("Input file must be given using --file argument");		
+		}
+		
+//		String fileName = 
+		File inputFile = (File) options.valueOf("file");
 		
 		if (!inputFile.exists())
 		{
-			throw new Exception("File does not exist: " + fileName);
+			throw new Exception("File does not exist: " + inputFile.getPath());
 		}
 		
 		//----------------------------------------
@@ -77,11 +96,11 @@ public class Main
 		//----------------------------------------
 		System.out.println("Running Model...");
 		
-		Triple<AstModel, Scope, Objective[]> modelPair = Javascript.readModel(inputFile);
+		Triple<AstModel, Scope, Objective[]> modelTriple = Javascript.readModel(inputFile);
 
-		AstModel model = modelPair.getFst();
+		AstModel model = modelTriple.getFst();
         
-        Objective[] goals = modelPair.getThd();
+        Objective[] goals = modelTriple.getThd();
         if (goals.length == 0) {
             throw new Exception("No goals.");
         } else if (goals.length > 1) {
@@ -91,9 +110,9 @@ public class Main
         
         System.out.println(goal.isMaximize() ? "Maximize" : "Minimize");       	
         
-        Scope scope = modelPair.getSnd(); 
-
-        if (args.length >= 2 && args[1].equals("--aadl"))
+        Scope scope = modelTriple.getSnd(); 
+        
+        if (options.has("testaadl")) // testing scopes for AADL model
 		{
 			Properties configFile = new Properties();
 			try {
@@ -131,29 +150,43 @@ public class Main
 					}
 				}
 				
-//				String releaseDate = configFile.getProperty("releasedate");
 			} catch (IOException e) {
 	 
 				e.printStackTrace();
 			}						
 		}
         else
-        	scope = scope.toBuilder().defaultScope(26).toScope();
+        {
+        	if (options.has("scope"))
+        	{
+            	scope = scope.toBuilder().defaultScope((int) options.valueOf("scope")).toScope();
+        	}
 
+        	if (options.has("maxint"))
+        	{
+				int scopeHigh = (int)options.valueOf("maxint");
+				int scopeLow = -(scopeHigh + 1);
+				scope = scope.toBuilder().intLow(scopeLow).intHigh(scopeHigh).toScope();
+        	}
+        }
+        
         ClaferOptimizer solver = ClaferCompiler.compile(model, 
         		scope, 
         	    goal);         
         
-        System.out.println("=====");        
+        System.out.println("Generating instances...");        
         
-        // The optimal instance
+    	int index = 0; // optimal instance id
         while (solver.find()) 
     	{
+            System.out.println("=== Instance " + (++index) + " ===\n");                    
             InstanceModel instance = solver.instance();
             for (InstanceClafer c : instance.getTopClafers())
             {
             	Utils.printClafer(c, System.out);
             }
+            System.out.println("--- instance " + (index) + " ends ---\n");                    
     	}
+    	
 	}
 }
