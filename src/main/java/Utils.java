@@ -27,11 +27,6 @@ import org.w3c.dom.NodeList;
 
 public class Utils {
 		
-	private static String claferFilter (String s)
-	{
-		return s.replaceAll("c0_*_", "");
-	}
-	
 	public static InstanceClafer getInstanceValueByName(InstanceClafer[] topClafers, String name) {
 		// TODO Auto-generated method stub
 
